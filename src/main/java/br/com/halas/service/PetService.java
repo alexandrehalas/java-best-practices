@@ -1,6 +1,7 @@
 package br.com.halas.service;
 
 import br.com.halas.client.ClientHttpConfiguration;
+import br.com.halas.domain.Pet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -9,7 +10,6 @@ import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
@@ -38,34 +38,27 @@ public class PetService {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] campos = line.split(",");
-            String tipo = campos[0];
-            String nome = campos[1];
-            String raca = campos[2];
-            int idade = Integer.parseInt(campos[3]);
-            String cor = campos[4];
-            Float peso = Float.parseFloat(campos[5]);
+            String type = campos[0];
+            String name = campos[1];
+            String breed = campos[2];
+            int age = Integer.parseInt(campos[3]);
+            String color = campos[4];
+            Float weight = Float.parseFloat(campos[5]);
 
-            JsonObject json = new JsonObject();
-            json.addProperty("tipo", tipo.toUpperCase());
-            json.addProperty("nome", nome);
-            json.addProperty("raca", raca);
-            json.addProperty("idade", idade);
-            json.addProperty("cor", cor);
-            json.addProperty("peso", peso);
+            Pet pet = new Pet(type, name, breed, age, color, weight);
 
-            HttpClient client = HttpClient.newHttpClient();
             String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
-            HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoPost(uri, json);
+            HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoPost(uri, pet);
 
             int statusCode = response.statusCode();
             String responseBody = response.body();
             if (statusCode == 200) {
-                System.out.println("Pet cadastrado com sucesso: " + nome);
+                System.out.println("Pet cadastrado com sucesso: " + name);
             } else if (statusCode == 404) {
-                System.out.println("Id ou nome do abrigo não encontado!");
+                System.out.println("Id ou name do abrigo não encontado!");
                 break;
             } else if (statusCode == 400 || statusCode == 500) {
-                System.out.println("Erro ao cadastrar o pet: " + nome);
+                System.out.println("Erro ao cadastrar o pet: " + name);
                 System.out.println(responseBody);
                 break;
             }
@@ -78,7 +71,6 @@ public class PetService {
         System.out.println("Digite o id ou nome do abrigo:");
         String idOuNome = new Scanner(System.in).nextLine();
 
-        HttpClient client = HttpClient.newHttpClient();
         String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
         HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoGet(uri);
         int statusCode = response.statusCode();

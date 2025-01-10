@@ -1,13 +1,13 @@
 package br.com.halas.service;
 
 import br.com.halas.client.ClientHttpConfiguration;
+import br.com.halas.domain.Shelter;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.Scanner;
 
@@ -20,22 +20,17 @@ public class ShelterService {
     }
 
     public void register() throws IOException, InterruptedException {
-        System.out.println("Digite o nome do abrigo:");
-        String nome = new Scanner(System.in).nextLine();
-        System.out.println("Digite o telefone do abrigo:");
-        String telefone = new Scanner(System.in).nextLine();
+        System.out.println("Digite o name do abrigo:");
+        String name = new Scanner(System.in).nextLine();
+        System.out.println("Digite o phone do abrigo:");
+        String phone = new Scanner(System.in).nextLine();
         System.out.println("Digite o email do abrigo:");
         String email = new Scanner(System.in).nextLine();
 
-        JsonObject json = new JsonObject();
-        json.addProperty("nome", nome);
-        json.addProperty("telefone", telefone);
-        json.addProperty("email", email);
-
-        HttpClient client = HttpClient.newHttpClient();
+        Shelter shelter = new Shelter(name, phone, email);
         String uri = "http://localhost:8080/abrigos";
 
-        HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoPost(uri, json);
+        HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoPost(uri, shelter);
         int statusCode = response.statusCode();
         String responseBody = response.body();
         if (statusCode == 200) {
@@ -48,7 +43,6 @@ public class ShelterService {
     }
 
     public void list() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newHttpClient();
         String uri = "http://localhost:8080/abrigos";
         HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoGet(uri);
         String responseBody = response.body();
