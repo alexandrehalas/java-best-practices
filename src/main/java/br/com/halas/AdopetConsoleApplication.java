@@ -1,5 +1,6 @@
 package br.com.halas;
 
+import br.com.halas.client.ClientHttpConfiguration;
 import br.com.halas.service.PetService;
 import br.com.halas.service.ShelterService;
 
@@ -9,8 +10,10 @@ public class AdopetConsoleApplication {
 
     public static void main(String[] args) {
 
-        ShelterService shelterService = new ShelterService();
-        PetService petService = new PetService();
+        ClientHttpConfiguration clientHttpConfiguration = new ClientHttpConfiguration();
+
+        ShelterService shelterService = new ShelterService(clientHttpConfiguration);
+        PetService petService = new PetService(clientHttpConfiguration);
 
         System.out.println("##### BOAS VINDAS AO SISTEMA ADOPET CONSOLE #####");
         try {
