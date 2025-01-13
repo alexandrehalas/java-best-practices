@@ -2,6 +2,7 @@ package br.com.halas.domain;
 
 public class Shelter {
 
+    private Long id;
     private String name;
     private String phone;
     private String email;
@@ -12,4 +13,12 @@ public class Shelter {
         this.email = email;
     }
 
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

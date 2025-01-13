@@ -2,13 +2,12 @@ package br.com.halas.service;
 
 import br.com.halas.client.ClientHttpConfiguration;
 import br.com.halas.domain.Shelter;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class ShelterService {
@@ -46,12 +45,12 @@ public class ShelterService {
         String uri = "http://localhost:8080/abrigos";
         HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoGet(uri);
         String responseBody = response.body();
-        JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
+        Shelter[] shelters = new ObjectMapper().readValue(responseBody, Shelter[].class);
+        List<Shelter> shelterList = Arrays.stream(shelters).toList();
         System.out.println("Abrigos cadastrados:");
-        for (JsonElement element : jsonArray) {
-            JsonObject jsonObject = element.getAsJsonObject();
-            long id = jsonObject.get("id").getAsLong();
-            String nome = jsonObject.get("nome").getAsString();
+        for (Shelter shelter : shelterList) {
+            long id = shelter.getId();
+            String nome = shelter.getName();
             System.out.println(id + " - " + nome);
         }
     }
