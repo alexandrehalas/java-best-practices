@@ -29,7 +29,7 @@ public class ShelterService {
         Shelter shelter = new Shelter(name, phone, email);
         String uri = "http://localhost:8080/abrigos";
 
-        HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoPost(uri, shelter);
+        HttpResponse<String> response = clientHttpConfiguration.sendPost(uri, shelter);
         int statusCode = response.statusCode();
         String responseBody = response.body();
         if (statusCode == 200) {
@@ -43,7 +43,7 @@ public class ShelterService {
 
     public void list() throws IOException, InterruptedException {
         String uri = "http://localhost:8080/abrigos";
-        HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoGet(uri);
+        HttpResponse<String> response = clientHttpConfiguration.sendGet(uri);
         String responseBody = response.body();
         Shelter[] shelters = new ObjectMapper().readValue(responseBody, Shelter[].class);
         List<Shelter> shelterList = Arrays.stream(shelters).toList();

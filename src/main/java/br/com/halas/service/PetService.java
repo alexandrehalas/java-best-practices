@@ -2,15 +2,14 @@ package br.com.halas.service;
 
 import br.com.halas.client.ClientHttpConfiguration;
 import br.com.halas.domain.Pet;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class PetService {
@@ -38,7 +37,7 @@ public class PetService {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] campos = line.split(",");
-            String type = campos[0];
+            String type = campos[0].toUpperCase();
             String name = campos[1];
             String breed = campos[2];
             int age = Integer.parseInt(campos[3]);
@@ -48,7 +47,7 @@ public class PetService {
             Pet pet = new Pet(type, name, breed, age, color, weight);
 
             String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
-            HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoPost(uri, pet);
+            HttpResponse<String> response = clientHttpConfiguration.sendPost(uri, pet);
 
             int statusCode = response.statusCode();
             String responseBody = response.body();
@@ -72,23 +71,23 @@ public class PetService {
         String idOuNome = new Scanner(System.in).nextLine();
 
         String uri = "http://localhost:8080/abrigos/" + idOuNome + "/pets";
-        HttpResponse<String> response = clientHttpConfiguration.dispararRequisicaoGet(uri);
+        HttpResponse<String> response = clientHttpConfiguration.sendGet(uri);
         int statusCode = response.statusCode();
         if (statusCode == 404 || statusCode == 500) {
             System.out.println("ID ou nome não cadastrado!");
             return true;
         }
         String responseBody = response.body();
-        JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
+        Pet[] pets = new ObjectMapper().readValue(responseBody, Pet[].class);
+        List<Pet> petList = Arrays.stream(pets).toList();
         System.out.println("Pets cadastrados:");
-        for (JsonElement element : jsonArray) {
-            JsonObject jsonObject = element.getAsJsonObject();
-            long id = jsonObject.get("id").getAsLong();
-            String tipo = jsonObject.get("tipo").getAsString();
-            String nome = jsonObject.get("nome").getAsString();
-            String raca = jsonObject.get("raca").getAsString();
-            int idade = jsonObject.get("idade").getAsInt();
-            System.out.println(id + " - " + tipo + " - " + nome + " - " + raca + " - " + idade + " ano(s)");
+        for (Pet pet : petList) {
+            long id = pet.getId();
+            String type = pet.getType();
+            String name = pet.getName();
+            String breed = pet.getBreed();
+            int age = pet.getAge();
+            System.out.println(id + " - " + type + " - " + name + " - " + breed + " - " + age + " ano(s)");
         }
         return false;
     }
