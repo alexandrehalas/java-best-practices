@@ -22,7 +22,7 @@ class ShelterServiceTest {
     private Shelter shelter = new Shelter("aaa", "(41)99999-9999", "aaa@email.com");
 
     @Test
-    void verifyIfClientSendGetIsCalled() throws IOException, InterruptedException {
+    void checkThereAreShelters() throws IOException, InterruptedException {
 
         shelter.setId(0L);
         String expectedShelters = "Abrigos cadastrados:";
@@ -33,8 +33,8 @@ class ShelterServiceTest {
         System.setOut(printStream);
 
         when(response.body()).thenReturn("""
-                [{"id": 0, "nome": "aaa", "telefone": "(41)99999-9999", "email": "aaa@gmail.com"}]
-        """);
+                        [{"id": 0, "nome": "aaa", "telefone": "(41)99999-9999", "email": "aaa@gmail.com"}]
+                """);
         when(client.sendGet(anyString())).thenReturn(response);
 
         shelterService.list();
@@ -48,7 +48,7 @@ class ShelterServiceTest {
     }
 
     @Test
-    void deveVerificarQuandoNaoHaAbrigo() throws IOException, InterruptedException {
+    void checkThereAreNoShelters() throws IOException, InterruptedException {
         shelter.setId(0L);
         String expected = "Não há abrigos cadastrados";
 
