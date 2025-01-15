@@ -21,11 +21,13 @@ public class PetService {
     }
 
     public boolean importPets() throws IOException, InterruptedException {
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("Digite o id ou nome do abrigo:");
-        String idOuNome = new Scanner(System.in).nextLine();
+        String idOuNome = scanner.nextLine();
 
         System.out.println("Digite o nome do arquivo CSV:");
-        String nomeArquivo = new Scanner(System.in).nextLine();
+        String nomeArquivo = scanner.nextLine();
 
         BufferedReader reader;
         try {
