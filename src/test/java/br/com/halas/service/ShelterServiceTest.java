@@ -22,7 +22,7 @@ class ShelterServiceTest {
     private Shelter shelter = new Shelter("aaa", "(41)99999-9999", "aaa@email.com");
 
     @Test
-    public void verifyIfClientSendGetIsCalled() throws IOException, InterruptedException {
+    void verifyIfClientSendGetIsCalled() throws IOException, InterruptedException {
 
         shelter.setId(0L);
         String expectedShelters = "Abrigos cadastrados:";
@@ -45,5 +45,25 @@ class ShelterServiceTest {
 
         Assertions.assertEquals(expectedShelters, actualShelters);
         Assertions.assertEquals(expectedIdAndName, actualIdAndName);
+    }
+
+    @Test
+    void deveVerificarQuandoNaoHaAbrigo() throws IOException, InterruptedException {
+        shelter.setId(0L);
+        String expected = "Não há abrigos cadastrados";
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+        System.setOut(printStream);
+
+        when(response.body()).thenReturn("[]");
+        when(client.sendGet(anyString())).thenReturn(response);
+
+        shelterService.list();
+
+        String[] lines = baos.toString().split(System.lineSeparator());
+        String actual = lines[0];
+
+        Assertions.assertEquals(expected, actual);
     }
 }
