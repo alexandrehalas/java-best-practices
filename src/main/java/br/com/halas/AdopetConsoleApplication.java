@@ -1,19 +1,12 @@
 package br.com.halas;
 
-import br.com.halas.client.ClientHttpConfiguration;
-import br.com.halas.service.PetService;
-import br.com.halas.service.ShelterService;
-
 import java.util.Scanner;
 
 public class AdopetConsoleApplication {
 
     public static void main(String[] args) {
 
-        ClientHttpConfiguration clientHttpConfiguration = new ClientHttpConfiguration();
-
-        ShelterService shelterService = new ShelterService(clientHttpConfiguration);
-        PetService petService = new PetService(clientHttpConfiguration);
+        CommandExecutor commandExecutor = new CommandExecutor();
 
         System.out.println("##### BOAS VINDAS AO SISTEMA ADOPET CONSOLE #####");
         try {
@@ -30,13 +23,13 @@ public class AdopetConsoleApplication {
                 opcaoEscolhida = Integer.parseInt(textoDigitado);
 
                 if (opcaoEscolhida == 1) {
-                    shelterService.list();
+                    commandExecutor.executeCommand(new ListShelterCommand());
                 } else if (opcaoEscolhida == 2) {
-                    shelterService.register();
+                    commandExecutor.executeCommand(new RegisterShelterCommand());
                 } else if (opcaoEscolhida == 3) {
-                    if (petService.list()) continue;
+                    commandExecutor.executeCommand(new ListPetCommand());
                 } else if (opcaoEscolhida == 4) {
-                    if (petService.importPets()) continue;
+                    commandExecutor.executeCommand(new ImportPetsCommand());
                 } else if (opcaoEscolhida == 5) {
                     break;
                 } else {
